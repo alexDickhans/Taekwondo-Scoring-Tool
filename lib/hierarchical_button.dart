@@ -21,7 +21,6 @@ class HierarchicalButton extends StatefulWidget {
 }
 
 class _HierarchicalButtonState extends State<HierarchicalButton> {
-
   @override
   void initState() {
     super.initState();
@@ -37,32 +36,41 @@ class _HierarchicalButtonState extends State<HierarchicalButton> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          widget.showMenuText,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+    return Container(
+        margin: EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceContainer,
+          borderRadius: BorderRadius.circular(12.0),
         ),
-        Center(
-          child: Row(
-            children: widget.firstLevelButtonNames.map((name1) {
-              return Column(
-                children: <Widget>[
-                      Text(name1, style: TextStyle(fontSize: 18))
-                    ] +
-                    widget.secondLevelButtonNames.map((name2) {
-                      return ElevatedButton(
-                        onPressed: () => _incrementCount(name1, name2, false),
-                        onLongPress: () => _incrementCount(name1, name2, true),
-                        child:
-                            Text('$name2'),
-                      );
-                    }).toList(),
-              );
-            }).toList(),
-          ),
-        ),
-      ],
-    );
+        padding: EdgeInsets.all(6),
+        child: Column(
+          children: [
+            Center(
+                child: Text(
+              widget.showMenuText,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+            )),
+            Center(
+              child: Row(
+                children: widget.firstLevelButtonNames.map((name1) {
+                  return Expanded(
+                      child: Column(
+                    children:
+                        <Widget>[Text(name1, style: TextStyle(fontSize: 18))] +
+                            widget.secondLevelButtonNames.map((name2) {
+                              return ElevatedButton(
+                                onPressed: () =>
+                                    _incrementCount(name1, name2, false),
+                                onLongPress: () =>
+                                    _incrementCount(name1, name2, true),
+                                child: Text('$name2'),
+                              );
+                            }).toList(),
+                  ));
+                }).toList(),
+              ),
+            ),
+          ],
+        ));
   }
 }

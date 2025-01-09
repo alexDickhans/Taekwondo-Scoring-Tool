@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'hierarchical_button.dart';
 
 void main() {
@@ -11,12 +12,12 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Scoring app',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const MyHomePage(title: 'Scoring Home Page'),
     );
   }
 }
@@ -32,7 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   List<String> _sharedSelections = [];
-  late List<HierarchicalButton> _hierarchicalButtons;
+  late List<Widget> _hierarchicalButtons;
 
   @override
   void initState() {
@@ -55,10 +56,51 @@ class _MyHomePageState extends State<MyHomePage> {
       HierarchicalButton(
         firstLevelButtonNames: ['Offense', 'Defense'],
         secondLevelButtonNames: ['Body', 'Head'],
-        showMenuText: "Position",
+        showMenuText: "Hook",
         sharedSelections: _sharedSelections,
         onSelectionChanged: _updateSelections,
       ),
+      HierarchicalButton(
+        firstLevelButtonNames: ['Offense', 'Defense'],
+        secondLevelButtonNames: ['Head'],
+        showMenuText: "Ax",
+        sharedSelections: _sharedSelections,
+        onSelectionChanged: _updateSelections,
+      ),
+      HierarchicalButton(
+        firstLevelButtonNames: ['Offense', 'Defense'],
+        secondLevelButtonNames: ['Body', 'Head'],
+        showMenuText: "Clinch Kicks",
+        sharedSelections: _sharedSelections,
+        onSelectionChanged: _updateSelections,
+      ),
+      HierarchicalButton(
+        firstLevelButtonNames: ['Offense', 'Defense'],
+        secondLevelButtonNames: ['Body'],
+        showMenuText: "Back",
+        sharedSelections: _sharedSelections,
+        onSelectionChanged: _updateSelections,
+      ),
+      HierarchicalButton(
+        firstLevelButtonNames: ['Offense', 'Defense'],
+        secondLevelButtonNames: ['Body', 'Head'],
+        showMenuText: "Twist",
+        sharedSelections: _sharedSelections,
+        onSelectionChanged: _updateSelections,
+      ),
+      Center(
+          child: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () => _addSelection("GAM"),
+            child: Text("Add GAM"),
+          ),
+          ElevatedButton(
+            onPressed: () => _addSelection("PTG"),
+            child: Text("Add PTG"),
+          ),
+        ],
+      )),
     ];
   }
 
@@ -80,6 +122,33 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _copyToClipboard(String text) {
+    Clipboard.setData(ClipboardData(text: text));
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Copied to clipboard'),
+          content: Text('The text "$text" has been copied to the clipboard.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _addSelection(String selection) {
+    setState(() {
+      _sharedSelections.add(selection);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,20 +157,29 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: GridView.count(
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              GridView.count(
                 crossAxisCount: 2, // Adjust the number of columns as needed
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
                 children: _hierarchicalButtons,
               ),
-            ),
-            Text(
-              'Selections: ${_sharedSelections.join(" ")}',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: GestureDetector(
+                  onTap: () => _copyToClipboard(_sharedSelections.join(" ")),
+                  child: Text(
+                    '${_sharedSelections.join(" ")}',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ),
+              SizedBox(height: 120), // Add space between GridView and text
+            ],
+          ),
         ),
       ),
       floatingActionButton: Row(
