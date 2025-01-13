@@ -58,12 +58,23 @@ class _HierarchicalButtonState extends State<HierarchicalButton> {
                     children:
                         <Widget>[Text(name1, style: TextStyle(fontSize: 18))] +
                             widget.secondLevelButtonNames.map((name2) {
+                              var count = 0;
+
+                              for (var selection in widget.sharedSelections) {
+                                if (selection.startsWith(
+                                    widget.showMenuText[0] +
+                                        name1[0] +
+                                        name2[0])) {
+                                  count++;
+                                }
+                              }
+
                               return ElevatedButton(
                                 onPressed: () =>
                                     _incrementCount(name1, name2, false),
                                 onLongPress: () =>
                                     _incrementCount(name1, name2, true),
-                                child: Text('$name2'),
+                                child: Text('${name2[0]} ($count)'),
                               );
                             }).toList(),
                   ));

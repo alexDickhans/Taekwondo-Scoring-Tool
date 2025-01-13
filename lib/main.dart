@@ -38,6 +38,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     super.initState();
+    initButtons();
+  }
+
+  void initButtons() {
     _hierarchicalButtons = [
       HierarchicalButton(
         firstLevelButtonNames: ['Offense', 'Defense'],
@@ -89,16 +93,34 @@ class _MyHomePageState extends State<MyHomePage> {
         onSelectionChanged: _updateSelections,
       ),
       Center(
-          child: Column(
+          child: GridView.count(
+        crossAxisCount: 2,
         children: [
-          ElevatedButton(
-            onPressed: () => _addSelection("GAM"),
-            child: Text("Add GAM"),
-          ),
-          ElevatedButton(
-            onPressed: () => _addSelection("PTG"),
-            child: Text("Add PTG"),
-          ),
+          Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: () => _addSelection("GAM"),
+                child: Text("GAM"),
+              )),
+          Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: () => _addSelection("PTG"),
+                child: Text("PTG"),
+              )),
+          Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: () => _addSelection("PUN"),
+                onLongPress: () => _addSelection("PUN1"),
+                child: Text('PUN (${_sharedSelections.where((element) => element.contains("PUN")).length})'),
+              )),
+          Container(
+              padding: EdgeInsets.all(5),
+              child: ElevatedButton(
+                onPressed: () => _addSelection("PTF"),
+                child: Text("PTF"),
+              )),
         ],
       )),
     ];
@@ -111,6 +133,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _reset() {
     setState(() {
       _sharedSelections.clear();
+      initButtons();
     });
   }
 
@@ -146,6 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void _addSelection(String selection) {
     setState(() {
       _sharedSelections.add(selection);
+      initButtons();
     });
   }
 
